@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OXU Lots</title>
+  <meta name="theme-color" content="#0b0f14">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <style>
+    :root{--bg:#0b0f14;--panel:#121822;--accent:#f2c14e;--text:#e6edf3;--muted:#9aa4b2;--ok:#2ecc71;--bad:#ff6b6b;}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(160deg,#0b0f14,#0e141c 60%,#0b0f14);color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    .wrap{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 18px}
+    h1{font-size:20px;margin:0;display:flex;align-items:center;gap:10px}
+    h1 .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(242,193,78,.6)}
+    .card{background:rgba(18,24,34,.85);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;margin:10px 0;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+    label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+    input,select{width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#0f141b;color:var(--text);outline:none}
+    input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(242,193,78,.15)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row>*{flex:1}
+    .small{font-size:12px;color:var(--muted)}
+    .muted{color:var(--muted)}
+    .btn{appearance:none;border:none;background:var(--accent);color:#121212;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn:active{transform:translateY(1px)}
+    .out{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
+    .pill{display:flex;justify-content:space-between;gap:10px;background:#0f141b;border:1px solid rgba(255,255,255,.06);padding:12px;border-radius:12px}
+    .pill b{font-size:18px}
+    .ok{color:var(--ok)} .bad{color:var(--bad)}
+    .right{margin-left:auto}
+    .hl{color:var(--accent)}
+    .footer{margin-top:18px;font-size:12px;color:var(--muted)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    details{background:#0f141b;border:1px solid rgba(255,255,255,.06);padding:12px 12px;border-radius:12px}
+    summary{cursor:pointer;color:var(--muted)}
+    .link{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><span class="dot"></span> <b>OXU Lots</b> — Calcolatore Size Lotti</h1>
+      <small class="muted">PWA • offline</small>
+    </header>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <label>Strumento</label>
+          <select id="symbol">
+            <option value="XAUUSD" selected>XAUUSD (Gold)</option>
+            <option value="EURUSD">EURUSD</option>
+            <option value="NAS100">NAS100</option>
+            <option value="CUSTOM">Personalizzato…</option>
+          </select>
+        </div>
+        <div>
+          <label>Saldo conto (USD)</label>
+          <input id="balance" type="number" inputmode="decimal" placeholder="10000" value="10000">
+        </div>
+        <div>
+          <label>Rischio per trade (%)</label>
+          <input id="riskPct" type="number" inputmode="decimal" step="0.1" placeholder="2" value="2">
+        </div>
+        <div>
+          <label>Modalità SL</label>
+          <select id="slMode">
+            <option value="price" selected>Differenza in prezzo (es. 5.40$)</option>
+            <option value="pips">Pips (con grandezza pip sotto)</option>
+          </select>
+        </div>
+        <div id="slPriceWrap">
+          <label>Stop-Loss — differenza di prezzo</label>
+          <input id="slPrice" type="number" inputmode="decimal" step="0.01" placeholder="5.40">
+          <div class="small">Esempio XAUUSD: inserisci quanti <b>$</b> separano entry e SL (es. 3000 → 2994.60 = <b>5.40</b>).</div>
+        </div>
+        <div id="slPipsWrap" style="display:none">
+          <label>Stop-Loss — pips</label>
+          <input id="slPips" type="number" inputmode="decimal" step="0.1" placeholder="540">
+          <div class="small">Imposta sotto “Grandezza pip” in base al tuo broker (XAUUSD tipico: <b>0,01</b>).</div>
+        </div>
+        <div>
+          <label>Grandezza pip</label>
+          <input id="pipSize" type="number" inputmode="decimal" step="0.00001" placeholder="0.01" value="0.01">
+          <div class="small">Minima variazione di prezzo che conta come 1 pip (XAU tipico: 0,01).</div>
+        </div>
+        <div>
+          <label>Valore pip per 1 lotto (USD)</label>
+          <input id="pipValue" type="number" inputmode="decimal" step="0.01" placeholder="1.00" value="1.00">
+          <div class="small">XAUUSD tipico: 1 pip (0,01) ≈ 1 USD per <b>1.00</b> lotto.</div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="calcBtn">Calcola</button>
+        <button class="btn" id="saveBtn" style="background:#2ecc71;color:#0b0f14">Salva default</button>
+        <button class="btn" id="resetBtn" style="background:#344155;color:#e6edf3">Reset</button>
+      </div>
+
+      <div class="out" id="out"></div>
+      <div class="footer">
+        <details>
+          <summary>Come funziona (nota rapida)</summary>
+          <p>
+            <b>Rischio $</b> = Saldo × Rischio%<br>
+            <b>SL in pips</b>: se inserisci la differenza prezzo, i pips sono <span class="mono">SL_prezzo / pipSize</span>. <br>
+            <b>Valore per pip</b> in USD per 1 lotto lo definisci tu (dipende dal broker).<br>
+            <b>Size (lotti)</b> = Rischio $ ÷ (SL_pips × Valore_pip_lotto).
+          </p>
+          <p class="small">
+            Esempio XAUUSD tipico: <span class="mono">pipSize=0.01</span>, <span class="mono">pipValue=1.00</span>. Se SL prezzo = 5.40 → 540 pips.
+          </p>
+        </details>
+      </div>
+    </div>
+
+    <div class="card">
+      <b>Installazione su Fold 7:</b>
+      <ul class="small">
+        <li>Pubblica questi file su GitHub Pages / Netlify / Vercel.</li>
+        <li>Apri l’URL con Samsung Internet o Chrome → menù ⋮ → <b>Aggiungi a schermata Home</b>.</li>
+        <li>Si installerà come app (PWA) e funzionerà anche <b>offline</b>.</li>
+      </ul>
+    </div>
+
+    <footer class="small muted">
+      OXU — Calcolatore size lotti. Le impostazioni sono salvate in locale.
+    </footer>
+  </div>
+
+  <script>
+    // Calculator logic (identico alla versione HTML locale)
+    const el = id => document.getElementById(id);
+    const fmt = n => (isFinite(n)? new Intl.NumberFormat('it-IT',{maximumFractionDigits:4}).format(n): '-');
+
+    const presets = {
+      "XAUUSD": { pipSize: 0.01, pipValue: 1.00 },
+      "EURUSD": { pipSize: 0.0001, pipValue: 10.00 },
+      "NAS100": { pipSize: 1.0, pipValue: 0.10 },
+      "CUSTOM": null
+    };
+
+    function applyPreset(sym){
+      if(!presets[sym]) return;
+      const p = presets[sym];
+      if(p){
+        el('pipSize').value = p.pipSize;
+        el('pipValue').value = p.pipValue;
+      }
+    }
+
+    el('symbol').addEventListener('change', e => {
+      if(e.target.value!=='CUSTOM') applyPreset(e.target.value);
+      calc();
+      saveDraft();
+    });
+
+    el('slMode').addEventListener('change', e => {
+      const m = e.target.value;
+      el('slPriceWrap').style.display = (m==='price')?'block':'none';
+      el('slPipsWrap').style.display = (m==='pips')?'block':'none';
+    });
+
+    function saveDraft(){
+      const data = {
+        symbol: el('symbol').value,
+        balance: el('balance').value,
+        riskPct: el('riskPct').value,
+        slMode: el('slMode').value,
+        slPrice: el('slPrice').value,
+        slPips: el('slPips').value,
+        pipSize: el('pipSize').value,
+        pipValue: el('pipValue').value
+      };
+      localStorage.setItem('oxu_calc_draft', JSON.stringify(data));
+    }
+    function loadDraft(){
+      try{
+        const raw = localStorage.getItem('oxu_calc_draft');
+        if(!raw) return;
+        const d = JSON.parse(raw);
+        for(const k in d){ if(el(k)) el(k).value = d[k]; }
+        el('slMode').dispatchEvent(new Event('change'));
+      }catch(_){}
+    }
+
+    ['balance','riskPct','slPrice','slPips','pipSize','pipValue','symbol','slMode'].forEach(id=>{
+      const node = el(id);
+      if(node) node.addEventListener('input', ()=>{ saveDraft(); });
+      if(node) node.addEventListener('change', ()=>{ saveDraft(); });
+    });
+
+    function calc(){
+      const balance = parseFloat(el('balance').value);
+      const riskPct = parseFloat(el('riskPct').value);
+      const pipSize = parseFloat(el('pipSize').value);
+      const pipValue = parseFloat(el('pipValue').value);
+      const slMode = el('slMode').value;
+      const slPrice = parseFloat(el('slPrice').value);
+      const slPipsIn = parseFloat(el('slPips').value);
+
+      if(!isFinite(balance)||!isFinite(riskPct)||!isFinite(pipSize)||!isFinite(pipValue)){
+        el('out').innerHTML = '<div class="pill"><span>Dati mancanti</span><b>-</b></div>';
+        return;
+      }
+
+      const risk$ = balance * (riskPct/100);
+
+      let slPips;
+      if(slMode==='price'){
+        if(!isFinite(slPrice) || slPrice<=0 || !isFinite(pipSize) || pipSize<=0){
+          el('out').innerHTML = '<div class="pill"><span>Inserisci SL (differenza prezzo) e grandezza pip valide.</span><b>-</b></div>';
+          return;
+        }
+        slPips = slPrice / pipSize;
+      }else{
+        if(!isFinite(slPipsIn) || slPipsIn<=0){
+          el('out').innerHTML = '<div class="pill"><span>Inserisci SL in pips valido.</span><b>-</b></div>';
+          return;
+        }
+        slPips = slPipsIn;
+      }
+
+      if(!isFinite(pipValue) || pipValue<=0){
+        el('out').innerHTML = '<div class="pill"><span>Imposta “Valore pip per 1 lotto”.</span><b>-</b></div>';
+        return;
+      }
+
+      const denom = slPips * pipValue;
+      const lots = denom>0 ? (risk$/denom) : NaN;
+
+      const lotsRounded = Math.max(0, Math.round(lots*100)/100);
+      const lotsMicro = Math.max(0, Math.round(lots*1000)/1000);
+
+      const out = `
+        <div class="pill"><span>Rischio (€/$)</span><b>$ ${fmt(risk$)}</b></div>
+        <div class="pill"><span>SL in pips</span><b>${fmt(slPips)}</b></div>
+        <div class="pill"><span>Size consigliata (step 0.01 lotti)</span><b class="${lots>0?'ok':'bad'}">${fmt(lotsRounded)}</b></div>
+        <div class="pill"><span>Size micro (step 0.001 lotti)</span><b class="${lots>0?'ok':'bad'}">${fmt(lotsMicro)}</b></div>
+      `;
+      el('out').innerHTML = out;
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', calc);
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      el('symbol').value='XAUUSD';
+      (function(){el('pipSize').value=0.01; el('pipValue').value=1.00;})();
+      el('balance').value=10000;
+      el('riskPct').value=2;
+      el('slMode').value='price';
+      el('slPrice').value='';
+      el('slPips').value='';
+      el('slMode').dispatchEvent(new Event('change'));
+      calc();
+      saveDraft();
+    });
+    document.getElementById('saveBtn').addEventListener('click', ()=>{
+      localStorage.setItem('oxu_calc_defaults', localStorage.getItem('oxu_calc_draft')||"");
+      alert('Impostazioni salvate come default sul dispositivo ✅');
+    });
+
+    (function restoreDefaults(){
+      const raw = localStorage.getItem('oxu_calc_defaults');
+      if(raw){
+        try{
+          const d = JSON.parse(raw);
+          for(const k in d){ if(el(k)) el(k).value = d[k]; }
+          el('slMode').dispatchEvent(new Event('change'));
+        }catch(_){}
+      }else{
+        (function(){el('pipSize').value=0.01; el('pipValue').value=1.00;})();
+      }
+    })();
+
+    loadDraft();
+    calc();
+
+    // PWA registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+</body>
+</html>
