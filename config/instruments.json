@@ -1,0 +1,128 @@
+{
+  "instruments": [
+    {
+      "symbol": "EURUSD",
+      "display": "EUR/USD",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "GBPUSD",
+      "display": "GBP/USD",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "AUDUSD",
+      "display": "AUD/USD",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "NZDUSD",
+      "display": "NZD/USD",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "EURGBP",
+      "display": "EUR/GBP",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "GBPCAD",
+      "display": "GBP/CAD",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "GBPCHF",
+      "display": "GBP/CHF",
+      "class": "forex_major",
+      "pipSize": 0.0001,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "EURJPY",
+      "display": "EUR/JPY",
+      "class": "forex_jpy",
+      "pipSize": 0.01,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "USDJPY",
+      "display": "USD/JPY",
+      "class": "forex_jpy",
+      "pipSize": 0.01,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "GBPJPY",
+      "display": "GBP/JPY",
+      "class": "forex_jpy",
+      "pipSize": 0.01,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "XAUUSD",
+      "display": "XAU/USD (Gold)",
+      "class": "metal",
+      "pipSize": 0.1,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "NAS100",
+      "display": "NASDAQ 100",
+      "class": "index",
+      "pipSize": 1.0,
+      "minLot": 0.1,
+      "lotStep": 0.1
+    },
+    {
+      "symbol": "SP500",
+      "display": "S&P 500",
+      "class": "index",
+      "pipSize": 0.25,
+      "minLot": 0.1,
+      "lotStep": 0.1
+    },
+    {
+      "symbol": "BTCUSD",
+      "display": "BTC/USD",
+      "class": "crypto",
+      "contractSize": 1.0,
+      "pipSize": 1.0,
+      "pipValuePerLot": 1.0,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    },
+    {
+      "symbol": "ETHUSD",
+      "display": "ETH/USD",
+      "class": "crypto",
+      "contractSize": 1.0,
+      "pipSize": 1.0,
+      "pipValuePerLot": 1.0,
+      "minLot": 0.01,
+      "lotStep": 0.01
+    }
+  ]
+}
