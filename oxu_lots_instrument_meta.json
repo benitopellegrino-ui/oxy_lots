@@ -1,0 +1,24 @@
+{
+  "defaults": {
+    "forex_major": {
+      "pip_size": 0.0001,
+      "min_lot": 0.01,
+      "lot_step": 0.01
+    },
+    "forex_jpy": {
+      "pip_size": 0.01,
+      "min_lot": 0.01,
+      "lot_step": 0.01
+    }
+  },
+  "overrides": {
+    "BTCUSD": {
+      "contract_size": 1.0,
+      "pip_size": 1.0,
+      "pip_value_per_lot": 1.0,
+      "min_lot": 0.01,
+      "lot_step": 0.01,
+      "leverage_note": "Account 1:1000; risk calc must reflect that margin ≠ risk."
+    }
+  }
+}
