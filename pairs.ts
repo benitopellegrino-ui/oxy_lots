@@ -1,16 +1,17 @@
-// 🦉 OXU Lots – Supported Pairs
 export const PAIRS = [
-  "AUDUSD",
-  "BTCUSD",
-  "ETHUSD",
-  "EURGBP",
-  "EURJPY",
   "EURUSD",
+  "GBPUSD",
+  "AUDUSD",
+  "NZDUSD",
+  "EURGBP",
   "GBPCAD",
   "GBPCHF",
+  "EURJPY",
+  "USDJPY",
   "GBPJPY",
-  "GBPUSD",
-  "NZDUSD",
+  "XAUUSD",
+  "NAS100",
   "SP500",
-  "USDJPY"
-];
+  "BTCUSD",
+  "ETHUSD"
+] as const;
